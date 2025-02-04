@@ -1,5 +1,10 @@
 name: 'Upstream Sync'
 
+# Explicit permissions for security best practices
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   schedule:
     - cron: '0 0 * * *'  # Runs every day at 00:00 UTC
@@ -17,6 +22,10 @@ jobs:
     name: Sync latest commits from upstream repo
     if: ${{ github.event.repository.fork }}
 
+    permissions:
+      contents: write  # Needed to push changes from upstream
+      pull-requests: write  # Allows creating pull requests if necessary
+
     steps:
       # REQUIRED step
       # Step 1: run a standard checkout action, provided by GitHub
@@ -25,7 +34,7 @@ jobs:
         with:
           # optional: set the branch to checkout,
           # sync action checks out your 'target_sync_branch' anyway
-          ref: main
+          ref: master
           # REQUIRED if your upstream repo is private (see wiki)
           persist-credentials: false
 
